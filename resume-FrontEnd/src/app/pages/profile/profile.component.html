@@ -1,0 +1,15 @@
+<div class="simple-page">
+  <app-app-navbar></app-app-navbar>
+  <main>
+    <p class="eyebrow">Account</p>
+    <h1>Profile</h1>
+    <section class="profile-card">
+      <div class="avatar">{{ (user.name || "U").charAt(0).toUpperCase() }}</div>
+      <div>
+        <h2>{{ user.name || "User" }}</h2>
+        <p>{{ user.email || "" }}</p>
+      </div>
+    </section>
+  </main>
+  <app-footer></app-footer>
+</div>

@@ -1,0 +1,439 @@
+<div class="app-page">
+  <app-app-navbar></app-app-navbar>
+
+  <main class="page-container">
+
+    <!-- Page Header -->
+    <section class="screen-heading">
+
+      <div>
+        <p class="eyebrow">Documents</p>
+        <h1>Documents</h1>
+        <p>Every resume, CV and cover letter you are working on.</p>
+      </div>
+
+      <button type="button" class="primary-button" (click)="openCreateModal()">
+        <mat-icon>add</mat-icon>
+        <span>New document</span>
+      </button>
+
+    </section>
+
+
+    <!-- Search & Filter -->
+    <section class="toolbar">
+
+      <!-- Search -->
+      <label class="search-box">
+
+        <mat-icon>search</mat-icon>
+
+        <input type="search" [formControl]="searchControl" placeholder="Search documents"
+          aria-label="Search documents" />
+
+      </label>
+
+
+      <!-- Type Filter -->
+      <label class="type-select">
+
+        <span>Type</span>
+
+        <select [formControl]="typeControl" aria-label="Filter documents by type">
+
+          <option value="all">
+            All types
+          </option>
+
+          <option *ngFor="let item of documentTypes" [value]="item.value">
+
+            {{ item.label }}
+
+          </option>
+
+        </select>
+
+      </label>
+
+    </section>
+
+
+    <!-- Success Message -->
+    <div *ngIf="successMessage" class="message success">
+
+      {{ successMessage }}
+
+    </div>
+
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="message error">
+
+      {{ errorMessage }}
+
+    </div>
+
+
+    <!-- Loading State -->
+    <section *ngIf="isLoading" class="state-card">
+
+      <mat-icon>
+        sync
+      </mat-icon>
+
+      <h3>
+        Loading documents...
+      </h3>
+
+      <p>
+        Getting your documents from the API.
+      </p>
+
+    </section>
+
+
+    <!-- Documents -->
+    <section *ngIf="!isLoading && filteredDocuments.length > 0" class="document-grid">
+
+      <article class="document-card" *ngFor="
+        let document of filteredDocuments;
+        trackBy: trackById
+      " (click)="openEditor(document.id)">
+
+        <!-- Card Top -->
+        <div class="card-top">
+
+          <mat-icon class="document-icon">
+            description
+          </mat-icon>
+
+
+          <!-- More Button -->
+          <button type="button" class="menu-button" aria-label="Document actions"
+            (click)="toggleMenu(document.id, $event)">
+
+            <mat-icon>
+              more_vert
+            </mat-icon>
+
+          </button>
+
+
+          <!-- Action Menu -->
+          <div *ngIf="isMenuOpen === document.id" class="action-menu" (click)="$event.stopPropagation()">
+
+            <button type="button" (click)="openEditor(document.id)">
+
+              <mat-icon>
+                edit
+              </mat-icon>
+
+              Open in Editor
+
+            </button>
+
+            <button type="button" (click)="openEditModal(document)">
+
+              <mat-icon>
+                settings
+              </mat-icon>
+
+              Settings / Rename
+
+            </button>
+
+            <button type="button" (click)="duplicateDocument(document)">
+
+              <mat-icon>
+                content_copy
+              </mat-icon>
+
+              Duplicate
+
+            </button>
+
+
+            <button type="button" class="danger" (click)="deleteDocument(document)">
+
+              <mat-icon>
+                delete
+              </mat-icon>
+
+              Delete
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- Document Title -->
+        <h2 [title]="document.title">
+
+          {{ document.title }}
+
+        </h2>
+
+
+        <!-- Document Details -->
+        <div class="chips">
+
+          <span class="chip">
+            {{ document.type }}
+          </span>
+
+          <span class="chip">
+            {{ document.template || 'Classic' }}
+          </span>
+
+        </div>
+
+
+        <!-- Updated Time -->
+        <p class="updated">
+
+          Updated
+          {{ document.updatedAt | date:'MMM d, y, h:mm a' }}
+
+        </p>
+
+      </article>
+
+    </section>
+
+
+    <!-- No Search Result -->
+    <section *ngIf="
+      !isLoading &&
+      filteredDocuments.length === 0 &&
+      documents.length > 0
+    " class="state-card">
+
+      <mat-icon>
+        search_off
+      </mat-icon>
+
+      <h3>
+        No matching documents
+      </h3>
+
+      <p>
+        Try a different search term or document type.
+      </p>
+
+    </section>
+
+
+    <!-- No Documents -->
+    <section *ngIf="
+      !isLoading &&
+      documents.length === 0
+    " class="state-card">
+
+      <mat-icon>
+        description
+      </mat-icon>
+
+      <h3>
+        No documents yet
+      </h3>
+
+      <p>
+        Create your first resume, CV or cover letter.
+      </p>
+
+      <button type="button" class="primary-button" (click)="openCreateModal()">
+
+        <mat-icon>
+          add
+        </mat-icon>
+
+        Create document
+
+      </button>
+
+    </section>
+
+  </main>
+
+
+  <!-- Create / Edit Modal -->
+  <div *ngIf="isModalOpen" class="modal-backdrop" (click)="closeModal()">
+
+    <section class="document-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+
+
+      <!-- Modal Header -->
+      <div class="modal-heading">
+
+        <div>
+
+          <p class="eyebrow">
+
+            {{ editingDocument ? 'Edit document' : 'New document' }}
+
+          </p>
+
+          <h2>
+
+            {{ editingDocument
+            ? 'Update document'
+            : 'Create a document'
+            }}
+
+          </h2>
+
+        </div>
+
+
+        <button type="button" class="close-button" (click)="closeModal()">
+
+          <mat-icon>
+            close
+          </mat-icon>
+
+        </button>
+
+      </div>
+
+
+      <!-- Form -->
+      <form [formGroup]="documentForm" (ngSubmit)="saveDocument()">
+
+
+        <!-- Title -->
+        <label>
+
+          <span>
+            Title
+          </span>
+
+          <input type="text" formControlName="title" placeholder="e.g. Senior Frontend Engineer — 2026" />
+
+        </label>
+
+
+        <!-- Type -->
+        <label>
+
+          <span>
+            Type
+          </span>
+
+          <select formControlName="type">
+
+            <option *ngFor="let item of documentTypes" [value]="item.value">
+
+              {{ item.label }}
+
+            </option>
+
+          </select>
+
+        </label>
+
+
+        <!-- Template -->
+        <label>
+
+          <span>
+            Template
+          </span>
+
+          <select formControlName="template">
+
+            <option value="Classic">
+              Classic
+            </option>
+
+            <option value="Modern">
+              Modern
+            </option>
+
+            <option value="Technical">
+              Technical
+            </option>
+
+            <option value="test">
+              test
+            </option>
+
+            <option value="Sidebar Gold">
+              Sidebar Gold
+            </option>
+
+            <option value="Sidebar Teal">
+              Sidebar Teal
+            </option>
+
+            <option value="Sidebar Blue">
+              Sidebar Blue
+            </option>
+
+            <option value="Simple">
+              Simple
+            </option>
+
+          </select>
+
+        </label>
+
+
+        <!-- Validation Error -->
+        <p class="form-error" *ngIf="
+          documentForm.controls['title'].touched &&
+          documentForm.controls['title'].invalid
+        ">
+
+          Please enter a document title.
+
+        </p>
+
+
+        <!-- Form Error -->
+        <div *ngIf="errorMessage" class="message error">
+
+          {{ errorMessage }}
+
+        </div>
+
+
+        <!-- Modal Actions -->
+        <div class="modal-actions">
+
+          <button type="button" class="secondary-button" (click)="closeModal()">
+
+            Cancel
+
+          </button>
+
+
+          <button type="submit" class="primary-button" [disabled]="isSaving">
+
+            <mat-icon>
+
+              {{ isSaving ? 'sync' : 'save' }}
+
+            </mat-icon>
+
+            {{ isSaving
+            ? 'Saving...'
+            : (
+            editingDocument
+            ? 'Save changes'
+            : 'Create document'
+            )
+            }}
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+  </div>
+
+  <app-footer></app-footer>
+</div>

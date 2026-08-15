@@ -1,0 +1,85 @@
+<div class="app-page">
+  <app-app-navbar></app-app-navbar>
+
+  <main class="page-container">
+    <section class="screen-heading">
+      <div>
+        <p class="eyebrow">Shared links</p>
+        <h1>Shared links</h1>
+        <p>Every public link you have handed out, in one place.</p>
+      </div>
+
+      <a routerLink="/documents" class="secondary-button">
+        <mat-icon>description</mat-icon>
+        <span>Go to documents</span>
+      </a>
+    </section>
+
+    <!-- Error / Alerts -->
+    <div *ngIf="error" class="message error">{{ error }}</div>
+
+    <!-- Loading State -->
+    <section *ngIf="loading" class="state-card">
+      <mat-icon class="spin">sync</mat-icon>
+      <strong>Loading shared links...</strong>
+    </section>
+
+    <!-- Shared Links Table / Card List -->
+    <section class="share-list" *ngIf="!loading && links.length">
+      <article class="share-card" *ngFor="let link of links">
+        <div class="share-icon">
+          <mat-icon>link</mat-icon>
+        </div>
+
+        <div class="share-details">
+          <div class="share-title-row">
+            <strong class="doc-title clickable-title" (click)="openDocument(link)" title="Open in editor">
+              {{ getDocTitle(link) }}
+            </strong>
+            <span class="active-badge">Active Link</span>
+          </div>
+
+          <div class="share-link-box">
+            <a [href]="getShareUrl(link)" target="_blank" class="share-url" title="Open public resume link">
+              {{ getShareUrl(link) }}
+            </a>
+          </div>
+
+          <div class="share-timestamp">
+            <span>Created {{ link.createdAt | date:'MMM d, y, h:mm a' }}</span>
+          </div>
+        </div>
+
+        <div class="share-actions-group">
+          <button class="action-btn copy-btn" type="button" (click)="copy(link)" [class.copied]="copied === link.slug"
+            title="Copy URL">
+            <mat-icon>{{ copied === link.slug ? 'check' : 'content_copy' }}</mat-icon>
+            <span>{{ copied === link.slug ? 'Copied!' : 'Copy Link' }}</span>
+          </button>
+
+          <button class="action-icon-btn" type="button" (click)="openLink(link)" title="Open in new tab">
+            <mat-icon>open_in_new</mat-icon>
+          </button>
+
+          <button class="action-icon-btn danger-icon-btn" type="button" (click)="deleteShare(link)"
+            title="Revoke / Delete link">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+      </article>
+    </section>
+
+    <!-- Empty State -->
+    <section class="state-card" *ngIf="!loading && !links.length">
+      <mat-icon>link_off</mat-icon>
+      <h3>No shared links yet</h3>
+      <p>Open any document in the editor and click "Share" to generate public links.</p>
+      <a routerLink="/documents" class="primary-button">
+        <mat-icon>description</mat-icon>
+        <span>View Documents</span>
+      </a>
+    </section>
+  </main>
+
+  <app-footer></app-footer>
+</div>

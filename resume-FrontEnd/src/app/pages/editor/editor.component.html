@@ -1,0 +1,475 @@
+<div class="editor-page-wrapper">
+  <!-- Top App Navigation -->
+  <app-app-navbar class="no-print"></app-app-navbar>
+
+  <!-- Editor Action Bar (Sticky Toolbar) -->
+  <header class="editor-toolbar no-print">
+    <div class="toolbar-left">
+      <a routerLink="/documents" class="back-link">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Documents</span>
+      </a>
+
+      <div class="doc-title-wrapper" *ngIf="document">
+        <input
+          type="text"
+          class="title-input"
+          [(ngModel)]="document.title"
+          (blur)="saveDocument()"
+          placeholder="Untitled Document"
+        />
+        <span class="type-badge">{{ document.type | titlecase }}</span>
+      </div>
+    </div>
+
+    <div class="toolbar-center" *ngIf="document">
+      <div class="template-selector">
+        <mat-icon class="select-icon">palette</mat-icon>
+        <select [(ngModel)]="document.template" (change)="saveDocument()">
+          <option *ngFor="let t of availableTemplates" [value]="t">
+            {{ t }} Template
+          </option>
+        </select>
+      </div>
+
+      <div class="view-tabs">
+        <button
+          type="button"
+          class="tab-btn"
+          [class.active]="activeTab === 'content'"
+          (click)="activeTab = 'content'">
+          <mat-icon>edit_note</mat-icon>
+          <span>Editor</span>
+        </button>
+        <button
+          type="button"
+          class="tab-btn"
+          [class.active]="activeTab === 'versions'"
+          (click)="activeTab = 'versions'; loadVersions()">
+          <mat-icon>history</mat-icon>
+          <span>Versions</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="toolbar-right" *ngIf="document">
+      <button
+        type="button"
+        class="action-btn"
+        (click)="createShareLink()"
+        title="Get Shareable Link">
+        <mat-icon>share</mat-icon>
+        <span>Share</span>
+      </button>
+
+      <button
+        type="button"
+        class="action-btn"
+        (click)="printResume()"
+        title="Print or Export Vector PDF">
+        <mat-icon>download</mat-icon>
+        <span>Export PDF</span>
+      </button>
+
+      <button
+        type="button"
+        class="save-btn"
+        (click)="saveAndExit()"
+        [disabled]="isSaving">
+        <mat-icon [class.spin]="isSaving">{{ isSaving ? 'sync' : 'save' }}</mat-icon>
+        <span>{{ isSaving ? 'Saving...' : 'Save & Exit' }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Messages -->
+  <div class="messages-container no-print" *ngIf="errorMessage || successMessage">
+    <div class="alert-banner error" *ngIf="errorMessage">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage }}</span>
+    </div>
+    <div class="alert-banner success" *ngIf="successMessage">
+      <mat-icon>check_circle</mat-icon>
+      <span>{{ successMessage }}</span>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state no-print" *ngIf="isLoading">
+    <mat-icon class="spin">sync</mat-icon>
+    <h3>Loading document canvas...</h3>
+    <p>Retrieving your structured sections from the API.</p>
+  </div>
+
+  <!-- Split Screen Workspace -->
+  <main class="editor-workspace" *ngIf="!isLoading && document">
+    
+    <!-- LEFT PANEL: Modular Section Editor -->
+    <aside class="editor-drawer no-print" [ngSwitch]="activeTab">
+
+      <!-- CONTENT TAB -->
+      <div class="drawer-content" *ngSwitchCase="'content'">
+        <div class="drawer-header">
+          <div>
+            <h2>Content Blocks</h2>
+            <p>Customize sections and drag or reorder freely.</p>
+          </div>
+          <button type="button" class="btn-add-section" (click)="addSection()">
+            <mat-icon>add</mat-icon>
+            <span>Add Section</span>
+          </button>
+        </div>
+
+        <!-- PERSONAL DETAILS BLOCK -->
+        <div class="personal-info-card">
+          <div class="info-card-header">
+            <mat-icon>person</mat-icon>
+            <h3>Personal & Contact Info</h3>
+          </div>
+          <div class="info-fields-grid">
+            <label class="field-label">
+              <span>Full Name</span>
+              <input
+                type="text"
+                class="field-input"
+                [(ngModel)]="personalInfo.fullName"
+                (blur)="saveDocument()"
+                placeholder="Enter your full name"
+              />
+            </label>
+
+            <label class="field-label">
+              <span>Professional Tagline / Subtitle</span>
+              <input
+                type="text"
+                class="field-input"
+                [(ngModel)]="personalInfo.tagline"
+                (blur)="saveDocument()"
+                placeholder="e.g. B.TECH CSE STUDENT · BACKEND DEVELOPER · SDE ASPIRANT"
+              />
+            </label>
+
+            <div class="two-fields-row">
+              <label class="field-label">
+                <span>Email Address</span>
+                <input
+                  type="email"
+                  class="field-input"
+                  [(ngModel)]="personalInfo.email"
+                  (blur)="saveDocument()"
+                  placeholder="e.g. you@example.com"
+                />
+              </label>
+              <label class="field-label">
+                <span>Location</span>
+                <input
+                  type="text"
+                  class="field-input"
+                  [(ngModel)]="personalInfo.location"
+                  (blur)="saveDocument()"
+                  placeholder="e.g. Haldwani, Uttarakhand, India"
+                />
+              </label>
+            </div>
+
+            <div class="two-fields-row">
+              <label class="field-label">
+                <span>GitHub Profile</span>
+                <input
+                  type="text"
+                  class="field-input"
+                  [(ngModel)]="personalInfo.github"
+                  (blur)="saveDocument()"
+                  placeholder="e.g. github.com/username"
+                />
+              </label>
+              <label class="field-label">
+                <span>LinkedIn Profile</span>
+                <input
+                  type="text"
+                  class="field-input"
+                  [(ngModel)]="personalInfo.linkedin"
+                  (blur)="saveDocument()"
+                  placeholder="e.g. linkedin.com/in/username"
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-list">
+          <div
+            class="section-card"
+            *ngFor="let section of document.sections; let sIdx = index">
+
+            <header class="section-card-header">
+              <div class="sec-left">
+                <span class="sec-num">{{ sIdx + 1 < 10 ? '0' + (sIdx + 1) : (sIdx + 1) }}</span>
+                <input
+                  type="text"
+                  class="sec-heading-input"
+                  [(ngModel)]="section.heading"
+                  (blur)="saveDocument()"
+                  placeholder="Section Heading"
+                />
+              </div>
+
+              <div class="sec-actions">
+                <label class="sidebar-toggle" title="Display in sidebar column for 2-column templates">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="section.isSidebar"
+                    (change)="saveDocument()"
+                  />
+                  <span>Sidebar</span>
+                </label>
+
+                <button
+                  type="button"
+                  class="icon-btn"
+                  (click)="moveSectionUp(sIdx)"
+                  [disabled]="sIdx === 0"
+                  title="Move Up">
+                  <mat-icon>keyboard_arrow_up</mat-icon>
+                </button>
+
+                <button
+                  type="button"
+                  class="icon-btn"
+                  (click)="moveSectionDown(sIdx)"
+                  [disabled]="sIdx === (document.sections?.length || 1) - 1"
+                  title="Move Down">
+                  <mat-icon>keyboard_arrow_down</mat-icon>
+                </button>
+
+                <button
+                  type="button"
+                  class="icon-btn danger"
+                  (click)="removeSection(sIdx); saveDocument()"
+                  title="Delete Section">
+                  <mat-icon>delete_outline</mat-icon>
+                </button>
+              </div>
+            </header>
+
+            <div class="section-items">
+              <div
+                class="item-row"
+                *ngFor="let item of section.items; let iIdx = index">
+                <span class="bullet-dot">•</span>
+                <textarea
+                  rows="2"
+                  class="item-textarea"
+                  [value]="getItemContent(item)"
+                  (input)="setItemContent(section, iIdx, $event)"
+                  (blur)="saveDocument()"
+                  placeholder="Enter role details, bullet points or descriptive summary..."
+                ></textarea>
+                <button
+                  type="button"
+                  class="item-del-btn"
+                  (click)="removeItem(section, iIdx); saveDocument()"
+                  title="Remove Item">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+
+              <button
+                type="button"
+                class="btn-add-item"
+                (click)="addItem(section)">
+                <mat-icon>add</mat-icon>
+                <span>Add Item / Bullet</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <button type="button" class="btn-add-section-bottom" (click)="addSection()">
+          <mat-icon>add_circle_outline</mat-icon>
+          <span>Create New Section Block</span>
+        </button>
+      </div>
+
+      <!-- VERSIONS TAB -->
+      <div class="drawer-content" *ngSwitchCase="'versions'">
+        <div class="drawer-header">
+          <div>
+            <h2>Version History</h2>
+            <p>Save and restore document snapshots at any time.</p>
+          </div>
+          <button type="button" class="btn-add-section" (click)="createVersion()">
+            <mat-icon>bookmark_add</mat-icon>
+            <span>Create Snapshot</span>
+          </button>
+        </div>
+
+        <div class="version-list" *ngIf="!isLoadingVersions">
+          <div class="version-card" *ngFor="let ver of versions">
+            <div class="ver-meta">
+              <strong>{{ ver.name || 'Version Snapshot' }}</strong>
+              <small>{{ ver.createdAt | date:'MMM d, y, h:mm a' }}</small>
+            </div>
+            <button type="button" class="btn-restore" (click)="restoreVersion(ver.id)">
+              <mat-icon>restore</mat-icon>
+              <span>Restore</span>
+            </button>
+          </div>
+
+          <div class="empty-versions" *ngIf="!versions.length">
+            <mat-icon>history_toggle_off</mat-icon>
+            <p>No snapshots created yet. Create a snapshot to bookmark your progress.</p>
+          </div>
+        </div>
+
+        <div class="loading-state-small" *ngIf="isLoadingVersions">
+          <mat-icon class="spin">sync</mat-icon>
+          <span>Loading snapshots...</span>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- RIGHT PANEL: Live Compiled Document Sheet -->
+    <section class="live-stage" [ngClass]="getTemplateClass()">
+
+      <!-- Document Sheet Container -->
+      <article class="resume-sheet" id="printable-resume">
+
+        <!-- SINGLE COLUMN LAYOUT (Modern / Classic / Technical / Simple) -->
+        <ng-container *ngIf="!document.template?.toLowerCase()?.includes('sidebar')">
+          
+          <header class="sheet-header">
+            <div class="header-main-info">
+              <h1 class="sheet-name">{{ fullNameDisplay }}</h1>
+              <p class="sheet-kicker">{{ displayTagline }}</p>
+            </div>
+            <div class="sheet-contact-bar">
+              <span>{{ displayLocation }}</span>
+              <span class="sep">•</span>
+              <span>{{ displayEmail }}</span>
+              <span class="sep">•</span>
+              <span>{{ displayPhone }}</span>
+              <span class="sep">•</span>
+              <span>{{ displayGithub }}</span>
+            </div>
+          </header>
+
+          <main class="sheet-main-content">
+            <section
+              class="sheet-section"
+              *ngFor="let section of document.sections">
+              <h2 class="section-title">{{ section.heading }}</h2>
+              <div class="section-content-items">
+                <div class="content-item" *ngFor="let item of section.items">
+                  <p>{{ getItemContent(item) }}</p>
+                </div>
+              </div>
+            </section>
+          </main>
+
+        </ng-container>
+
+        <!-- TWO COLUMN ASYMMETRIC LAYOUT (Sidebar Gold / Teal / Blue) -->
+        <ng-container *ngIf="document.template?.toLowerCase()?.includes('sidebar')">
+          
+          <div class="sheet-split-layout">
+            
+            <!-- Sidebar Column -->
+            <aside class="sheet-sidebar-column">
+              
+              <!-- Circular Avatar with Ring Border and Initials -->
+              <div class="sidebar-avatar-wrap">
+                <div class="sidebar-avatar-circle">
+                  <span class="avatar-letter">{{ initialLetter }}</span>
+                </div>
+              </div>
+
+              <!-- Contact Section -->
+              <section class="sheet-section sidebar-sec">
+                <div class="sidebar-title-wrap">
+                  <h2 class="sidebar-section-title">Contact</h2>
+                  <div class="sidebar-title-line"></div>
+                </div>
+                <div class="sidebar-contact-list">
+                  <div class="contact-block">
+                    <strong class="contact-label">Location</strong>
+                    <span class="contact-val">{{ displayLocation }}</span>
+                  </div>
+                  <div class="contact-block">
+                    <strong class="contact-label">GitHub</strong>
+                    <span class="contact-val accent-val">{{ displayGithub }}</span>
+                  </div>
+                  <div class="contact-block">
+                    <strong class="contact-label">LinkedIn</strong>
+                    <span class="contact-val accent-val">{{ displayLinkedin }}</span>
+                  </div>
+                  <div class="contact-block">
+                    <strong class="contact-label">Email</strong>
+                    <span class="contact-val">{{ displayEmail }}</span>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Sidebar Sections -->
+              <section
+                class="sheet-section sidebar-sec"
+                *ngFor="let section of getSidebarSections()">
+                <div class="sidebar-title-wrap">
+                  <h2 class="sidebar-section-title">{{ section.heading }}</h2>
+                  <div class="sidebar-title-line"></div>
+                </div>
+                <div class="sidebar-items-list">
+                  <div class="sidebar-item" *ngFor="let item of section.items">
+                    <span class="diamond-bullet">◆</span>
+                    <p class="sidebar-item-text">{{ getItemContent(item) }}</p>
+                  </div>
+                </div>
+              </section>
+            </aside>
+
+            <!-- Main Column -->
+            <main class="sheet-main-column">
+              
+              <!-- Header with Two-Tone Name & Tagline -->
+              <header class="main-header-banner">
+                <h1 class="main-candidate-name">
+                  <span class="name-black">{{ firstName }}</span>
+                  <span class="name-accent" *ngIf="lastName"> {{ lastName }}</span>
+                </h1>
+                <p class="main-subtitle-tagline">
+                  {{ displayTagline | uppercase }}
+                </p>
+                <div class="header-divider-bar"></div>
+              </header>
+
+              <!-- Main Sections -->
+              <section
+                class="sheet-section main-sec"
+                *ngFor="let section of getMainSections()">
+                <div class="main-section-heading-wrap">
+                  <h2 class="main-section-title">{{ section.heading }}</h2>
+                  <div class="main-section-line"></div>
+                </div>
+                <div class="main-section-items-wrap">
+                  <div class="main-content-card" *ngFor="let item of section.items">
+                    <span class="bullet-dash">–</span>
+                    <div class="main-item-body">
+                      <p>{{ getItemContent(item) }}</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </main>
+
+          </div>
+
+        </ng-container>
+
+      </article>
+
+    </section>
+
+  </main>
+</div>

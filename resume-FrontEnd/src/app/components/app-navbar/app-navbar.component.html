@@ -1,0 +1,149 @@
+<header class="app-navbar">
+  <div class="navbar-container">
+
+    <!-- Logo -->
+    <a
+      routerLink="/dashboard"
+      class="logo">
+      <span class="logo-mark">RF</span>
+      <span class="brand-text">ResumeFlow</span>
+    </a>
+
+    <!-- Navigation Links with Icons -->
+    <nav class="nav-links">
+
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </a>
+
+      <a
+        routerLink="/documents"
+        routerLinkActive="active">
+        <mat-icon>description</mat-icon>
+        <span>Documents</span>
+      </a>
+
+      <a
+        routerLink="/templates"
+        routerLinkActive="active">
+        <mat-icon>palette</mat-icon>
+        <span>Templates</span>
+      </a>
+
+      <a
+        routerLink="/applications"
+        routerLinkActive="active">
+        <mat-icon>business_center</mat-icon>
+        <span>Applications</span>
+      </a>
+
+      <a
+        routerLink="/shares"
+        routerLinkActive="active">
+        <mat-icon>link</mat-icon>
+        <span>Shared links</span>
+      </a>
+
+      <a
+        routerLink="/exports"
+        routerLinkActive="active">
+        <mat-icon>download</mat-icon>
+        <span>Exports</span>
+      </a>
+
+    </nav>
+
+    <!-- User Section -->
+    <div class="user-section">
+
+      <button
+        type="button"
+        class="user-button"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="isMenuOpen">
+
+        <!-- Avatar -->
+        <span class="avatar">
+          {{ userInitials }}
+        </span>
+
+        <!-- User Name -->
+        <span class="user-name">
+          {{ user?.name || 'My Account' }}
+        </span>
+
+        <!-- Arrow -->
+        <span
+          class="arrow"
+          [class.open]="isMenuOpen">
+          ▾
+        </span>
+
+      </button>
+
+      <!-- User Dropdown Menu -->
+      <div
+        class="user-menu"
+        *ngIf="isMenuOpen"
+        (click)="$event.stopPropagation()">
+
+        <!-- User Information -->
+        <div class="menu-user">
+
+          <span class="menu-avatar">
+            {{ userInitials }}
+          </span>
+
+          <div class="menu-user-info">
+
+            <strong>
+              {{ user?.name || 'User' }}
+            </strong>
+
+            <small>
+              {{ user?.email }}
+            </small>
+
+          </div>
+
+        </div>
+
+        <div class="menu-divider"></div>
+
+        <!-- Profile -->
+        <a
+          routerLink="/profile"
+          (click)="closeMenu()">
+          <mat-icon>person</mat-icon>
+          <span>Profile</span>
+        </a>
+
+        <!-- Change Password -->
+        <a
+          routerLink="/change-password"
+          (click)="closeMenu()">
+          <mat-icon>lock_reset</mat-icon>
+          <span>Change password</span>
+        </a>
+
+        <div class="menu-divider"></div>
+
+        <!-- Logout -->
+        <button
+          type="button"
+          class="logout-button"
+          (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Sign out</span>
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+</header>

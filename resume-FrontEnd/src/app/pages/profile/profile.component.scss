@@ -1,0 +1,73 @@
+.simple-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-color);
+  color: var(--text-color);
+
+  main {
+    flex: 1;
+    width: min(720px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 40px 0 80px;
+  }
+}
+
+.eyebrow {
+  color: var(--accent-primary);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.simple-page h1 {
+  margin: 6px 0 24px;
+  font-size: 1.75rem;
+  font-weight: 850;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  .avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #ecfdf5;
+    border: 2px solid #0d9488;
+    color: #0d9488;
+    font-size: 1.25rem;
+    font-weight: 850;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .simple-page main {
+    width: calc(100% - 32px);
+  }
+}

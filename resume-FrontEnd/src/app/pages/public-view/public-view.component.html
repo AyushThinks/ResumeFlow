@@ -1,0 +1,94 @@
+<div class="public-view-page">
+  <!-- Top Navigation & Action Bar -->
+  <header class="public-topbar">
+    <div class="topbar-container">
+      <a routerLink="/" class="logo">
+        <span class="logo-mark">RF</span>
+        <span class="brand-text">ResumeFlow</span>
+      </a>
+
+      <div class="topbar-center" *ngIf="document">
+        <span class="status-pill">
+          <span class="pulse-dot"></span>
+          Live Verified Resume
+        </span>
+        <strong class="doc-title">{{ document.title }}</strong>
+      </div>
+
+      <div class="topbar-actions">
+        <button
+          type="button"
+          class="primary-btn"
+          (click)="printDocument()"
+          *ngIf="document">
+          <mat-icon>print</mat-icon>
+          <span>Print / Save PDF</span>
+        </button>
+
+        <a routerLink="/signup" class="outline-btn">
+          <span>Create Yours</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Document Presentation Stage -->
+  <main class="presentation-stage">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="state-container">
+      <mat-icon class="spin-icon">sync</mat-icon>
+      <h3>Loading verified document...</h3>
+    </div>
+
+    <!-- Error / Link Expired State -->
+    <div *ngIf="!loading && error" class="state-container error-card">
+      <mat-icon class="error-icon">link_off</mat-icon>
+      <h3>Shared link not available</h3>
+      <p>{{ error }}</p>
+      <a routerLink="/" class="primary-btn" style="margin-top: 14px;">
+        <mat-icon>home</mat-icon>
+        <span>Go to ResumeFlow</span>
+      </a>
+    </div>
+
+    <!-- Resume Parchment Canvas -->
+    <div class="parchment-wrapper" *ngIf="!loading && document">
+      <div class="resume-sheet" [class.with-sidebar]="hasSidebar()">
+        <!-- Optional Sidebar (for modern split templates) -->
+        <aside class="sheet-sidebar" *ngIf="hasSidebar()">
+          <div class="sidebar-section" *ngFor="let sec of getSidebarSections()">
+            <h3 class="section-heading">{{ sec.heading }}</h3>
+            <div class="section-body">
+              <div *ngFor="let itm of sec.items" class="sidebar-item">
+                {{ getItemText(itm) }}
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main Body -->
+        <div class="sheet-main">
+          <!-- Document Header -->
+          <header class="sheet-header">
+            <h1 class="candidate-name">{{ document.title }}</h1>
+            <div class="candidate-role" *ngIf="document.type">
+              {{ document.type | titlecase }} Profile
+            </div>
+          </header>
+
+          <!-- Main Sections -->
+          <section
+            class="sheet-section"
+            *ngFor="let sec of getMainSections()">
+            <h2 class="section-title">{{ sec.heading }}</h2>
+            <div class="section-content">
+              <div class="item-block" *ngFor="let itm of sec.items">
+                <p>{{ getItemText(itm) }}</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

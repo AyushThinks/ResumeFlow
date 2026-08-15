@@ -1,0 +1,164 @@
+<div class="app-page">
+  <app-app-navbar></app-app-navbar>
+
+  <main class="page-container">
+    <section class="screen-heading">
+      <div>
+        <p class="eyebrow">Applications</p>
+        <h1>Applications</h1>
+        <p>Drag a card or move stages to track every opportunity along your pipeline.</p>
+      </div>
+
+      <button class="primary-button" type="button" (click)="openCreateModal()">
+        <mat-icon>add</mat-icon>
+        <span>Track application</span>
+      </button>
+    </section>
+
+    <!-- Alerts -->
+    <div *ngIf="error" class="message error">{{ error }}</div>
+    <div *ngIf="success" class="message success">{{ success }}</div>
+
+    <!-- Loading -->
+    <section *ngIf="loading" class="state-card">
+      <mat-icon class="spin">sync</mat-icon>
+      <strong>Loading applications...</strong>
+    </section>
+
+    <!-- Kanban Board -->
+    <section *ngIf="!loading" class="kanban" (click)="activeMenuId = null">
+      <article class="kanban-column" [style.--col-color]="column.color" [style.--col-bg]="column.bg"
+        [style.--col-border]="column.border" [style.--col-badge-bg]="column.badgeBg"
+        [style.--col-badge-text]="column.badgeText" *ngFor="let column of columns">
+
+        <!-- Top Colored Stripe -->
+        <div class="col-top-bar" [style.background-color]="column.color"></div>
+
+        <header class="column-header">
+          <div class="col-title">
+            <span class="status-indicator-dot" [style.background-color]="column.color"></span>
+            <h2>{{ column.label }}</h2>
+          </div>
+          <span class="count-badge">{{ getByStatus(column.key).length }}</span>
+        </header>
+
+        <div class="kanban-list">
+          <div class="application-card" [style.--card-color]="column.color" [style.--card-badge-bg]="column.badgeBg"
+            [style.--card-badge-text]="column.badgeText" [style.--card-border]="column.border"
+            *ngFor="let application of getByStatus(column.key)">
+            <div class="app-card-top">
+              <div class="company-logo">
+                {{ displayTitle(application).charAt(0).toUpperCase() }}
+              </div>
+
+              <div class="app-actions-wrap">
+                <button type="button" class="dots-btn" (click)="toggleMenu(application.id, $event)">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+
+                <!-- Context Menu -->
+                <div class="app-dropdown-menu" *ngIf="activeMenuId === application.id"
+                  (click)="$event.stopPropagation()">
+                  <div class="menu-label">Move to:</div>
+                  <button type="button" *ngFor="let c of columns" [disabled]="c.key === application.status"
+                    (click)="updateStatus(application, c.key)">
+                    {{ c.label }}
+                  </button>
+                  <div class="menu-divider"></div>
+                  <button type="button" (click)="openEditModal(application)">
+                    <mat-icon>edit</mat-icon>
+                    <span>Edit</span>
+                  </button>
+                  <button type="button" class="danger" (click)="deleteApplication(application)">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="application-copy">
+              <strong>{{ displayTitle(application) }}</strong>
+              <span class="role-text">{{ displayRole(application) }}</span>
+              <small *ngIf="application.location" class="location-text">
+                <mat-icon>location_on</mat-icon>
+                {{ application.location }}
+              </small>
+              <small *ngIf="application.updatedAt" class="date-text">
+                {{ application.updatedAt | date:'MMM d, y' }}
+              </small>
+            </div>
+          </div>
+
+          <!-- Enhanced Empty Drop Area with Icon & Stage Tint -->
+          <div *ngIf="getByStatus(column.key).length === 0" class="column-empty">
+            <mat-icon class="empty-icon">{{ column.icon }}</mat-icon>
+            <span>No {{ column.label.toLowerCase() }} jobs</span>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <!-- Modal for Tracking / Editing Application -->
+  <div class="modal-backdrop" *ngIf="isModalOpen" (click)="closeModal()">
+    <div class="app-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ editingApp ? 'Edit Application' : 'Track an Application' }}</h2>
+        <button type="button" class="close-btn" (click)="closeModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <form [formGroup]="appForm" (ngSubmit)="saveApplication()">
+        <div class="form-row-2">
+          <label>
+            <span>Company Name *</span>
+            <input type="text" formControlName="company" placeholder="e.g. Linear, Vercel, Stripe" />
+          </label>
+
+          <label>
+            <span>Role / Job Title *</span>
+            <input type="text" formControlName="role" placeholder="e.g. Senior Frontend Engineer" />
+          </label>
+        </div>
+
+        <div class="form-row-2">
+          <label>
+            <span>Pipeline Stage</span>
+            <select formControlName="status">
+              <option *ngFor="let col of columns" [value]="col.key">{{ col.label }}</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Location</span>
+            <input type="text" formControlName="location" placeholder="e.g. Remote, Bangalore" />
+          </label>
+        </div>
+
+        <label>
+          <span>Linked Document</span>
+          <select formControlName="documentId">
+            <option [ngValue]="null">None</option>
+            <option *ngFor="let doc of documents" [value]="doc.id">{{ doc.title }}</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Notes</span>
+          <textarea formControlName="notes" rows="2" placeholder="Recruiter contacts, interview notes..."></textarea>
+        </label>
+
+        <div class="modal-actions">
+          <button type="button" class="secondary-button" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="primary-button" [disabled]="isSaving">
+            {{ isSaving ? 'Saving...' : (editingApp ? 'Save Changes' : 'Track Application') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <app-footer></app-footer>
+</div>

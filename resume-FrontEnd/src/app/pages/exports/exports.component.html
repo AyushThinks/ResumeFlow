@@ -1,0 +1,64 @@
+<div class="app-page">
+  <app-app-navbar></app-app-navbar>
+
+  <main class="page-container">
+    <section class="screen-heading">
+      <div>
+        <p class="eyebrow">Exports</p>
+        <h1>Your exports</h1>
+        <p>Keep track of the documents you have generated.</p>
+      </div>
+      <a routerLink="/documents" class="secondary-button">
+        <mat-icon>description</mat-icon>
+        <span>Go to documents</span>
+      </a>
+    </section>
+
+    <div *ngIf="error" class="message error">{{ error }}</div>
+
+    <!-- Loading State -->
+    <section *ngIf="loading" class="state-card">
+      <mat-icon class="spin">sync</mat-icon>
+      <strong>Loading exports...</strong>
+    </section>
+
+    <!-- Exports Table / Card List -->
+    <section *ngIf="!loading && exports.length" class="export-list">
+      <article class="export-row" *ngFor="let item of exports">
+        <div class="file-icon">
+          <mat-icon>picture_as_pdf</mat-icon>
+        </div>
+
+        <div class="export-copy">
+          <div class="title-line">
+            <strong>{{ getTitle(item) }}</strong>
+            <span class="format-badge">{{ getFormat(item) }}</span>
+          </div>
+          <span class="date-line">
+            Exported {{ getDate(item) | date:'MMM d, y, h:mm a' }}
+          </span>
+        </div>
+
+        <div class="export-actions">
+          <button class="primary-button small-btn" type="button" (click)="openDocument(item)">
+            <mat-icon>edit</mat-icon>
+            <span>Open in Editor</span>
+          </button>
+        </div>
+      </article>
+    </section>
+
+    <!-- Empty State -->
+    <section *ngIf="!loading && !exports.length" class="state-card">
+      <mat-icon>download</mat-icon>
+      <h3>No exports yet</h3>
+      <p>Open any resume or CV in the editor and click "Export PDF" to generate and track your files here.</p>
+      <a routerLink="/documents" class="primary-button">
+        <mat-icon>description</mat-icon>
+        <span>View Documents</span>
+      </a>
+    </section>
+  </main>
+
+  <app-footer></app-footer>
+</div>

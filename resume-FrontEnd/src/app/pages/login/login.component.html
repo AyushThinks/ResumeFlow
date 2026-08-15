@@ -1,0 +1,246 @@
+<section id="login-page">
+  <div class="auth-wrapper">
+    <!-- Brand Header with Frosted Greyish Backdrop -->
+    <a routerLink="/" class="auth-brand" aria-label="Go to ResumeFlow home">
+      <strong>RF</strong>
+      <span>ResumeFlow</span>
+    </a>
+
+    <!-- Auth Card -->
+    <div class="login-card">
+      <header class="card-header">
+        <span class="auth-badge">ACCOUNT ACCESS</span>
+        <h2>Welcome back</h2>
+        <p>Enter your credentials to continue to your workspace.</p>
+      </header>
+
+      <!-- Error Alert -->
+      <div class="alert-error" *ngIf="errorMessage" role="alert">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
+        <!-- Email Field -->
+        <div class="form-group">
+          <label for="login-email">Email address</label>
+          <div class="input-wrapper" [class.has-error]="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
+            <mat-icon class="field-icon">mail_outline</mat-icon>
+            <input
+              id="login-email"
+              type="email"
+              placeholder="name@example.com"
+              formControlName="email"
+              autocomplete="email"
+            >
+          </div>
+          <span class="field-error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['required']">
+            Email is required
+          </span>
+          <span class="field-error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['email']">
+            Please enter a valid email address
+          </span>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <div class="label-row">
+            <label for="login-password">Password</label>
+            <button
+              type="button"
+              class="forgot-link-btn"
+              (click)="openForgotModal()">
+              Forgot password?
+            </button>
+          </div>
+          <div class="input-wrapper" [class.has-error]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+            <mat-icon class="field-icon">lock_outline</mat-icon>
+            <input
+              id="login-password"
+              [type]="showPassword ? 'text' : 'password'"
+              placeholder="••••••••"
+              formControlName="password"
+              autocomplete="current-password"
+            >
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+              <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          <span class="field-error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['required']">
+            Password is required
+          </span>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="isLoading">
+          <span *ngIf="!isLoading">Sign in to workspace</span>
+          <span *ngIf="isLoading" class="loading-state">
+            <mat-icon class="spin-icon">sync</mat-icon>
+            <span>Signing in...</span>
+          </span>
+        </button>
+      </form>
+
+      <!-- Card Footer -->
+      <footer class="card-footer">
+        <p>
+          Don't have an account?
+          <a routerLink="/signup" id="showSignup">Create account</a>
+        </p>
+      </footer>
+    </div>
+
+    <!-- Back to Home -->
+    <a routerLink="/" class="back-link">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Back to homepage</span>
+    </a>
+  </div>
+
+  <!-- Forgot Password Floating Modal with 2-Step OTP Verification -->
+  <div class="modal-backdrop" *ngIf="isForgotModalOpen" (click)="closeForgotModal()">
+    <div class="forgot-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <h2>{{ forgotStep === 'email' ? 'Reset your password' : 'Enter OTP & Set Password' }}</h2>
+          <p>{{ forgotStep === 'email' ? 'Enter your email to receive a verification OTP code.' : 'Verify your identity and set a new secure password.' }}</p>
+        </div>
+        <button type="button" class="close-btn" (click)="closeForgotModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <!-- Success Alert -->
+      <div class="alert-success" *ngIf="forgotSuccessMessage">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ forgotSuccessMessage }}</span>
+      </div>
+
+      <!-- Error Alert -->
+      <div class="alert-error" *ngIf="forgotErrorMessage">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ forgotErrorMessage }}</span>
+      </div>
+
+      <!-- STEP 1: Enter Email to Send OTP -->
+      <div class="forgot-body" *ngIf="!forgotSuccessMessage && forgotStep === 'email'">
+        <div class="form-group">
+          <label>Registered Email Address</label>
+          <div class="input-wrapper">
+            <mat-icon class="field-icon">mail_outline</mat-icon>
+            <input
+              type="email"
+              placeholder="name@example.com"
+              [(ngModel)]="forgotEmail"
+              (keyup.enter)="sendForgotPassword()"
+            >
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="secondary-btn" (click)="closeForgotModal()">Cancel</button>
+          <button
+            type="button"
+            class="primary-btn"
+            (click)="sendForgotPassword()"
+            [disabled]="forgotLoading">
+            <span *ngIf="!forgotLoading">Send OTP Code</span>
+            <span *ngIf="forgotLoading">Generating OTP...</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Verify OTP and Enter New Password -->
+      <form class="forgot-body" *ngIf="!forgotSuccessMessage && forgotStep === 'otp'" (ngSubmit)="verifyOtpAndReset()" autocomplete="off">
+        <div class="otp-info-box">
+          <mat-icon>mail</mat-icon>
+          <span>We've sent a 6-digit verification code to <strong>{{ forgotEmail }}</strong>. Check your inbox or console log and enter it below.</span>
+        </div>
+
+        <div class="dev-otp-pill" *ngIf="devOtpCode" style="background: rgba(16, 185, 129, 0.15); border: 1px dashed #10b981; padding: 10px 14px; border-radius: 8px; font-size: 13px; color: #34d399; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between;">
+          <span>💡 <strong>Dev Mode OTP:</strong> {{ devOtpCode }}</span>
+          <button type="button" (click)="enteredOtp = devOtpCode" style="background: #10b981; color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; font-weight: 600;">Fill OTP</button>
+        </div>
+
+        <div class="form-group">
+          <label for="rf_otp_input">6-Digit OTP Code</label>
+          <div class="input-wrapper">
+            <mat-icon class="field-icon">pin</mat-icon>
+            <input
+              id="rf_otp_input"
+              name="rf_otp_code_reset_clean"
+              type="text"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              maxlength="6"
+              placeholder="Enter 6-digit OTP"
+              [(ngModel)]="enteredOtp"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="rf_new_pass_input">New Password</label>
+          <div class="input-wrapper">
+            <mat-icon class="field-icon">lock_outline</mat-icon>
+            <input
+              id="rf_new_pass_input"
+              name="rf_new_pass_reset_clean"
+              autocomplete="new-password"
+              [type]="showNewPassword ? 'text' : 'password'"
+              placeholder="Min 4 characters"
+              [(ngModel)]="newPassword"
+            >
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="showNewPassword = !showNewPassword"
+              [attr.aria-label]="showNewPassword ? 'Hide password' : 'Show password'">
+              <mat-icon>{{ showNewPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="rf_confirm_pass_input">Confirm New Password</label>
+          <div class="input-wrapper">
+            <mat-icon class="field-icon">lock_outline</mat-icon>
+            <input
+              id="rf_confirm_pass_input"
+              name="rf_confirm_pass_reset_clean"
+              autocomplete="new-password"
+              [type]="showNewPassword ? 'text' : 'password'"
+              placeholder="Confirm new password"
+              [(ngModel)]="confirmPassword"
+            >
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="secondary-btn" (click)="forgotStep = 'email'">Back</button>
+          <button
+            type="submit"
+            class="primary-btn"
+            [disabled]="forgotLoading">
+            <span *ngIf="!forgotLoading">Reset & Update Password</span>
+            <span *ngIf="forgotLoading">Updating...</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Done State Actions -->
+      <div class="modal-actions" *ngIf="forgotSuccessMessage">
+        <button type="button" class="primary-btn" style="width: 100%;" (click)="closeForgotModal()">
+          Continue to Sign In
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

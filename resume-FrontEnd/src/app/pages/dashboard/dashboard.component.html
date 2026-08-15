@@ -1,0 +1,230 @@
+<div class="app-page dashboard-page">
+  <app-app-navbar></app-app-navbar>
+
+  <main class="page-container">
+
+    <!-- Dashboard Header -->
+    <section class="dashboard-heading">
+      <div>
+        <p class="eyebrow">Dashboard</p>
+        <h1>
+          Good day, {{ userName || 'User' }}
+          <span aria-hidden="true">👋</span>
+        </h1>
+        <p class="subtitle">
+          Build something great today. Here is where everything stands.
+        </p>
+      </div>
+
+      <div class="heading-actions">
+        <button
+          type="button"
+          class="secondary-button"
+          routerLink="/applications">
+          <mat-icon>business_center</mat-icon>
+          <span>Track Application</span>
+        </button>
+
+        <button
+          type="button"
+          class="primary-button"
+          routerLink="/documents">
+          <mat-icon>add</mat-icon>
+          <span>New Resume</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Statistics: 4 Stat Cards Matching Prototype -->
+    <section class="stats-grid">
+      <!-- Documents -->
+      <article class="stat-card doc-stat" routerLink="/documents">
+        <div class="stat-icon-wrap cyan-icon">
+          <mat-icon>description</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-number-row">
+            <strong>{{ documentCount }}</strong>
+            <span class="stat-title">Documents</span>
+          </div>
+          <span class="stat-sub">Total resumes</span>
+        </div>
+      </article>
+
+      <!-- Applications -->
+      <article class="stat-card app-stat" routerLink="/applications">
+        <div class="stat-icon-wrap blue-icon">
+          <mat-icon>business_center</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-number-row">
+            <strong>{{ applicationCount }}</strong>
+            <span class="stat-title">Applications</span>
+          </div>
+          <span class="stat-sub">Total tracked</span>
+        </div>
+      </article>
+
+      <!-- Saved Versions -->
+      <article class="stat-card ver-stat" routerLink="/documents">
+        <div class="stat-icon-wrap purple-icon">
+          <mat-icon>history</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-number-row">
+            <strong>{{ versionCount }}</strong>
+            <span class="stat-title">Versions</span>
+          </div>
+          <span class="stat-sub">Total versions</span>
+        </div>
+      </article>
+
+      <!-- Exports -->
+      <article class="stat-card exp-stat" routerLink="/exports">
+        <div class="stat-icon-wrap amber-icon">
+          <mat-icon>download</mat-icon>
+        </div>
+        <div class="stat-info">
+          <div class="stat-number-row">
+            <strong>{{ exportCount }}</strong>
+            <span class="stat-title">Exports</span>
+          </div>
+          <span class="stat-sub">Total exports</span>
+        </div>
+      </article>
+    </section>
+
+    <!-- Dashboard Main Grid -->
+    <section class="dashboard-grid">
+
+      <!-- Recent Documents Panel -->
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Recent documents</h2>
+            <p>Your latest resume work.</p>
+          </div>
+          <a routerLink="/documents" class="view-all-link">View all</a>
+        </div>
+
+        <div class="recent-list" *ngIf="recentDocuments.length">
+          <div
+            class="document-item"
+            *ngFor="let doc of recentDocuments"
+            [routerLink]="['/editor', doc.id]">
+            <div class="doc-icon-wrap">
+              <mat-icon>description</mat-icon>
+            </div>
+
+            <div class="doc-info">
+              <strong>{{ doc.title }}</strong>
+              <div class="doc-meta">
+                <span class="doc-type-pill">{{ doc.type || 'resume' }}</span>
+                <span>updated {{ doc.updatedAt | date:'MMM d, y' }}</span>
+              </div>
+            </div>
+
+            <mat-icon class="arrow-icon">chevron_right</mat-icon>
+          </div>
+        </div>
+
+        <div class="empty-box" *ngIf="!recentDocuments.length">
+          <mat-icon>note_add</mat-icon>
+          <p>No documents created yet.</p>
+          <button class="primary-button small-btn" routerLink="/documents">Create your first resume</button>
+        </div>
+      </article>
+
+      <!-- Application Pipeline Panel -->
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Application pipeline</h2>
+            <p>Where your applications stand.</p>
+          </div>
+          <a routerLink="/applications" class="view-all-link">Manage</a>
+        </div>
+
+        <div class="pipeline-list">
+          <div class="pipeline-row">
+            <div class="stage-info">
+              <span class="stage-dot stage-saved"></span>
+              <span class="stage-name">Saved</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill saved-bar" [style.width.%]="savedPercentage"></div>
+            </div>
+            <span class="stage-count count-saved">{{ savedCount }}</span>
+          </div>
+
+          <div class="pipeline-row">
+            <div class="stage-info">
+              <span class="stage-dot stage-applied"></span>
+              <span class="stage-name">Applied</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill applied-bar" [style.width.%]="appliedPercentage"></div>
+            </div>
+            <span class="stage-count count-applied">{{ appliedCount }}</span>
+          </div>
+
+          <div class="pipeline-row">
+            <div class="stage-info">
+              <span class="stage-dot stage-interview"></span>
+              <span class="stage-name">Interview</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill interview-bar" [style.width.%]="interviewPercentage"></div>
+            </div>
+            <span class="stage-count count-interview">{{ interviewCount }}</span>
+          </div>
+
+          <div class="pipeline-row">
+            <div class="stage-info">
+              <span class="stage-dot stage-offer"></span>
+              <span class="stage-name">Offer</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill offer-bar" [style.width.%]="offerPercentage"></div>
+            </div>
+            <span class="stage-count count-offer">{{ offerCount }}</span>
+          </div>
+
+          <div class="pipeline-row">
+            <div class="stage-info">
+              <span class="stage-dot stage-rejected"></span>
+              <span class="stage-name">Rejected</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill rejected-bar" [style.width.%]="rejectedPercentage"></div>
+            </div>
+            <span class="stage-count count-rejected">{{ rejectedCount }}</span>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- Bottom Assistant & Tips Row -->
+    <section class="tips-grid">
+      <div class="tip-card tip-gold">
+        <div class="tip-icon">💡</div>
+        <div class="tip-content">
+          <strong>Tip of the day</strong>
+          <p>Use action verbs and measurable results to increase interview callback rates by up to 40%.</p>
+        </div>
+      </div>
+
+      <div class="tip-card tip-purple">
+        <div class="tip-icon">✨</div>
+        <div class="tip-content">
+          <strong>AI Assistant Available</strong>
+          <p>Generate tailored executive summaries and role descriptions in the Document Editor.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <app-footer></app-footer>
+</div>

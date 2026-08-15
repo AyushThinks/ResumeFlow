@@ -1,0 +1,65 @@
+<div class="app-page">
+  <app-app-navbar></app-app-navbar>
+  <main class="page-container">
+    <section class="screen-heading">
+      <div>
+        <p class="eyebrow">Templates</p>
+        <h1>Choose a starting point</h1>
+        <p>Pick a layout and start shaping your next resume.</p>
+      </div>
+    </section>
+    <section class="template-grid">
+      <article class="template-card" *ngFor="let template of templates">
+        <div class="preview" [ngClass]="[template.layout, 'accent-' + template.accent]">
+          <!-- Sidebar Layout Mini Preview -->
+          <div class="mini-sidebar-sheet" *ngIf="template.layout === 'sidebar'">
+            <div class="mini-sidebar-left">
+              <div class="mini-avatar"></div>
+              <div class="mini-side-line"></div>
+              <div class="mini-side-dots"><span></span><span></span><span></span></div>
+              <div class="mini-side-line"></div>
+              <div class="mini-side-dots"><span></span><span></span></div>
+            </div>
+            <div class="mini-main-right">
+              <div class="mini-header-two-tone">
+                <span class="m-black"></span>
+                <span class="m-acc"></span>
+              </div>
+              <div class="mini-tagline"></div>
+              <div class="mini-divider-black"></div>
+              <div class="mini-sec-row"><span class="sec-label"></span><span class="sec-bar"></span></div>
+              <div class="mini-bullet-lines"><span></span><span></span><span></span></div>
+              <div class="mini-sec-row"><span class="sec-label"></span><span class="sec-bar"></span></div>
+              <div class="mini-bullet-lines"><span></span><span></span></div>
+            </div>
+          </div>
+
+          <!-- Standard Layout Mini Preview -->
+          <div class="mini-standard-sheet" *ngIf="template.layout !== 'sidebar'">
+            <div class="preview-top"><span></span><span></span></div>
+            <div class="preview-body">
+              <div class="preview-lines">
+                <b></b><i></i><em></em><em></em><em></em><em></em><em></em>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="template-info">
+          <div>
+            <span class="category">{{ template.category }}</span>
+            <h2>{{ template.name }}</h2>
+            <p>{{ template.description }}</p>
+          </div>
+          <button
+            class="primary-button"
+            type="button"
+            (click)="useTemplate(template)"
+          >
+            Use template
+          </button>
+        </div>
+      </article>
+    </section>
+  </main>
+  <app-footer></app-footer>
+</div>
