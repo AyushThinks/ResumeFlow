@@ -7,6 +7,10 @@ The project is divided into two major parts:
 * **Frontend:** Angular application
 * **Backend:** Node.js + Express REST API
 
+## 🚀 Live Demo
+
+[![Live Demo](https://img.shields.io/badge/Live-Demo-success?style=for-the-badge)](https://resume-flow-gilt.vercel.app/) [![Visitors](https://count.getloli.com/@ResumeFlow?name=ResumeFlow&theme=booru-rainbow)](https://github.com/AyushThinks/ResumeFlow)
+
 ---
 
 ## Project Structure
