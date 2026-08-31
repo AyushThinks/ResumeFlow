@@ -71,7 +71,7 @@
             <input
               id="signup-password"
               [type]="showPassword ? 'text' : 'password'"
-              placeholder="At least 6 characters"
+              placeholder="At least 8 characters"
               formControlName="password"
               autocomplete="new-password"
             >
@@ -87,7 +87,7 @@
             Password is required
           </span>
           <span class="field-error" *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.errors?.['minlength']">
-            Password must be at least 6 characters
+            Password must be at least 8 characters
           </span>
         </div>
 

@@ -479,9 +479,24 @@ a {
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .container {
     width: min(100% - 32px, var(--max-width));
+  }
+
+  .page-container {
+    width: calc(100% - 32px);
+    padding: 24px 0 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    width: min(100% - 24px, var(--max-width));
+  }
+
+  .page-container {
+    width: calc(100% - 24px);
   }
 }
 

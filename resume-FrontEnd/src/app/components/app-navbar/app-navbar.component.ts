@@ -15,6 +15,7 @@ interface User {
 export class AppNavbarComponent implements OnInit {
 
   isMenuOpen = false;
+  isMobileNavOpen = false;
 
   user: User | null = null;
 
@@ -22,6 +23,17 @@ export class AppNavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUser();
+  }
+
+  toggleMobileNav(): void {
+    this.isMobileNavOpen = !this.isMobileNavOpen;
+    if (this.isMobileNavOpen) {
+      this.isMenuOpen = false;
+    }
+  }
+
+  closeMobileNav(): void {
+    this.isMobileNavOpen = false;
   }
 
   loadUser(): void {

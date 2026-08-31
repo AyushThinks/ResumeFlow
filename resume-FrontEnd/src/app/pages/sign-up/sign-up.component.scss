@@ -335,12 +335,30 @@ form {
 }
 
 @media (max-width: 480px) {
+  #signup-page {
+    padding: 32px 14px;
+  }
+
   .signup-card {
-    padding: 30px 22px;
+    padding: 28px 18px;
     border-radius: 16px;
   }
 
   .card-header h2 {
-    font-size: 1.5rem;
+    font-size: 1.45rem;
+  }
+}
+
+@media (max-width: 360px) {
+  #signup-page {
+    padding: 20px 10px;
+  }
+
+  .signup-card {
+    padding: 22px 14px;
+  }
+
+  .card-header h2 {
+    font-size: 1.3rem;
   }
 }

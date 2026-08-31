@@ -1145,15 +1145,210 @@
   }
 }
 
+.mobile-preview-tab {
+  display: none;
+}
+
 @media (max-width: 1080px) {
+  .mobile-preview-tab {
+    display: inline-flex;
+  }
+
   .editor-workspace {
     grid-template-columns: 1fr;
+    height: calc(100vh - 120px);
   }
 
   .editor-drawer {
-    height: auto;
-    position: static;
+    display: block;
+    height: 100%;
+    overflow-y: auto;
     border-right: none;
-    border-bottom: 1px solid var(--border-color);
+  }
+
+  .live-stage {
+    display: flex;
+    height: 100%;
+    overflow-y: auto;
+    padding: 28px 20px 100px;
+  }
+
+  /* In single column mode, toggle between editor drawer and live stage */
+  .editor-workspace {
+    .editor-drawer {
+      display: block;
+    }
+    .live-stage {
+      display: none;
+    }
+
+    &.preview-mode {
+      .editor-drawer {
+        display: none !important;
+      }
+      .live-stage {
+        display: flex !important;
+      }
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .editor-toolbar {
+    padding: 0 16px;
+    gap: 10px;
+
+    .toolbar-left {
+      gap: 10px;
+
+      .type-badge {
+        display: none;
+      }
+
+      .title-input {
+        max-width: 160px;
+        font-size: 0.92rem;
+      }
+    }
+
+    .toolbar-center {
+      gap: 8px;
+
+      .template-selector {
+        padding: 4px 8px;
+
+        select {
+          font-size: 0.78rem;
+        }
+      }
+    }
+
+    .toolbar-right {
+      gap: 6px;
+
+      .action-btn span {
+        display: none;
+      }
+
+      .action-btn {
+        padding: 6px 10px;
+      }
+
+      .save-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 720px) {
+  .editor-toolbar {
+    min-height: auto;
+    height: auto;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    gap: 8px;
+
+    .toolbar-left {
+      order: 1;
+      flex: 1;
+      justify-content: flex-start;
+      min-width: 0;
+
+      .title-input {
+        max-width: 140px;
+      }
+    }
+
+    .toolbar-right {
+      order: 2;
+      margin-left: auto;
+    }
+
+    .toolbar-center {
+      order: 3;
+      width: 100%;
+      justify-content: space-between;
+      padding-top: 6px;
+      border-top: 1px solid var(--border-color);
+
+      .template-selector {
+        flex: 1;
+        max-width: 170px;
+      }
+
+      .view-tabs {
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  .editor-workspace {
+    height: calc(100vh - 165px);
+  }
+
+  .personal-info-card .info-fields-grid .two-fields-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .section-card-header {
+    flex-wrap: wrap;
+    gap: 10px;
+
+    .sec-left {
+      width: 100%;
+      flex: 1;
+    }
+
+    .sec-actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
+  }
+
+  .resume-sheet {
+    padding: 28px 18px;
+
+    .sheet-split-layout {
+      grid-template-columns: 1fr;
+      gap: 24px;
+
+      .sheet-sidebar-column {
+        padding: 24px 18px;
+        border-radius: 6px;
+      }
+
+      .sheet-main-column {
+        padding: 0 4px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .editor-drawer .drawer-content {
+    padding: 16px 12px 80px;
+  }
+
+  .live-stage {
+    padding: 16px 8px 80px;
+  }
+
+  .resume-sheet {
+    padding: 20px 12px;
+
+    .sheet-header .sheet-name {
+      font-size: 1.5rem;
+    }
+
+    .main-header-banner .main-candidate-name {
+      font-size: 1.6rem;
+    }
+  }
+
+  .editor-toolbar .toolbar-left .back-link span {
+    display: none;
   }
 }

@@ -85,6 +85,16 @@
 
       </button>
 
+      <!-- Mobile Toggle Button -->
+      <button
+        type="button"
+        class="app-mobile-toggle"
+        (click)="toggleMobileNav()"
+        [attr.aria-expanded]="isMobileNavOpen"
+        aria-label="Toggle navigation drawer">
+        <mat-icon>{{ isMobileNavOpen ? 'close' : 'menu' }}</mat-icon>
+      </button>
+
       <!-- User Dropdown Menu -->
       <div
         class="user-menu"
@@ -145,5 +155,90 @@
 
     </div>
 
+  </div>
+
+  <!-- Mobile Drawer Backdrop -->
+  <div
+    class="app-mobile-backdrop"
+    *ngIf="isMobileNavOpen"
+    (click)="closeMobileNav()">
+  </div>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="app-mobile-drawer" [class.open]="isMobileNavOpen">
+    <nav class="mobile-drawer-links">
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeMobileNav()">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </a>
+
+      <a
+        routerLink="/documents"
+        routerLinkActive="active"
+        (click)="closeMobileNav()">
+        <mat-icon>description</mat-icon>
+        <span>Documents</span>
+      </a>
+
+      <a
+        routerLink="/templates"
+        routerLinkActive="active"
+        (click)="closeMobileNav()">
+        <mat-icon>palette</mat-icon>
+        <span>Templates</span>
+      </a>
+
+      <a
+        routerLink="/applications"
+        routerLinkActive="active"
+        (click)="closeMobileNav()">
+        <mat-icon>business_center</mat-icon>
+        <span>Applications</span>
+      </a>
+
+      <a
+        routerLink="/shares"
+        routerLinkActive="active"
+        (click)="closeMobileNav()">
+        <mat-icon>link</mat-icon>
+        <span>Shared links</span>
+      </a>
+
+      <a
+        routerLink="/exports"
+        routerLinkActive="active"
+        (click)="closeMobileNav()">
+        <mat-icon>download</mat-icon>
+        <span>Exports</span>
+      </a>
+    </nav>
+
+    <div class="mobile-drawer-footer">
+      <div class="drawer-user-info" *ngIf="user">
+        <span class="user-pill-avatar">{{ userInitials }}</span>
+        <div class="user-pill-text">
+          <strong>{{ user.name }}</strong>
+          <small>{{ user.email }}</small>
+        </div>
+      </div>
+      <div class="drawer-actions-row">
+        <a routerLink="/profile" (click)="closeMobileNav()" class="drawer-action-link">
+          <mat-icon>person</mat-icon>
+          <span>Profile</span>
+        </a>
+        <a routerLink="/change-password" (click)="closeMobileNav()" class="drawer-action-link">
+          <mat-icon>lock_reset</mat-icon>
+          <span>Password</span>
+        </a>
+      </div>
+      <button type="button" class="drawer-logout-btn" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Sign out</span>
+      </button>
+    </div>
   </div>
 </header>

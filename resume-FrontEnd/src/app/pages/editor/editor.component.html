@@ -43,6 +43,14 @@
         </button>
         <button
           type="button"
+          class="tab-btn mobile-preview-tab"
+          [class.active]="activeTab === 'preview'"
+          (click)="activeTab = 'preview'">
+          <mat-icon>visibility</mat-icon>
+          <span>Preview</span>
+        </button>
+        <button
+          type="button"
           class="tab-btn"
           [class.active]="activeTab === 'versions'"
           (click)="activeTab = 'versions'; loadVersions()">
@@ -102,7 +110,7 @@
   </div>
 
   <!-- Split Screen Workspace -->
-  <main class="editor-workspace" *ngIf="!isLoading && document">
+  <main class="editor-workspace" *ngIf="!isLoading && document" [class.preview-mode]="activeTab === 'preview'">
     
     <!-- LEFT PANEL: Modular Section Editor -->
     <aside class="editor-drawer no-print" [ngSwitch]="activeTab">

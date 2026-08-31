@@ -23,6 +23,38 @@
         <span>Start writing</span>
         <mat-icon class="btn-arrow">arrow_forward</mat-icon>
       </a>
+      <button
+        type="button"
+        class="mobile-toggle"
+        (click)="toggleMobileMenu()"
+        [attr.aria-expanded]="isMobileMenuOpen"
+        aria-label="Toggle navigation menu">
+        <mat-icon>{{ isMobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
+      </button>
     </section>
   </nav>
+
+  <!-- Mobile Drawer -->
+  <div
+    class="mobile-drawer-backdrop"
+    *ngIf="isMobileMenuOpen"
+    (click)="closeMobileMenu()">
+  </div>
+
+  <div class="mobile-drawer" [class.open]="isMobileMenuOpen">
+    <ul class="mobile-nav-links">
+      <li><a href="#features" (click)="closeMobileMenu()">Architecture</a></li>
+      <li><a href="#how-it-works" (click)="closeMobileMenu()">Sync Engine</a></li>
+      <li><a href="#templates" (click)="closeMobileMenu()">Canvas Styles</a></li>
+      <li><a href="#faq" (click)="closeMobileMenu()">Intelligence</a></li>
+    </ul>
+
+    <div class="mobile-drawer-actions">
+      <a routerLink="/login" (click)="closeMobileMenu()" class="mobile-login-btn">Log in</a>
+      <a routerLink="/signup" (click)="closeMobileMenu()" class="btn btn-primary mobile-cta-btn">
+        <span>Start writing</span>
+        <mat-icon class="btn-arrow">arrow_forward</mat-icon>
+      </a>
+    </div>
+  </div>
 </header>

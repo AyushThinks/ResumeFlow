@@ -557,12 +557,34 @@ form {
 }
 
 @media (max-width: 480px) {
+  #login-page {
+    padding: 32px 14px;
+  }
+
   .login-card {
-    padding: 30px 22px;
+    padding: 28px 18px;
     border-radius: 16px;
   }
 
   .card-header h2 {
-    font-size: 1.5rem;
+    font-size: 1.45rem;
+  }
+
+  .forgot-modal {
+    padding: 20px 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  #login-page {
+    padding: 20px 10px;
+  }
+
+  .login-card {
+    padding: 22px 14px;
+  }
+
+  .card-header h2 {
+    font-size: 1.3rem;
   }
 }
