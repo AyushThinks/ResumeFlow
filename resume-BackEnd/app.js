@@ -19,9 +19,9 @@ process.on("unhandledRejection", (reason) => {
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
-const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:4200")
+const allowedOrigins = (process.env.CLIENT_URL || "https://resume-flow-gilt.vercel.app,http://localhost:4200")
   .split(",")
-  .map((origin) => origin.trim())
+  .map((origin) => origin.trim().replace(/\/+$/, ""))
   .filter(Boolean);
 
 if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
