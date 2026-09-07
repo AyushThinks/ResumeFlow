@@ -138,7 +138,7 @@ async function forgotPassword(req, res) {
       expiresAt: Date.now() + 15 * 60 * 1000,
     });
 
-    console.log(`\n========================================\n[ResumeFlow OTP] Generated code for ${email}: ${otp}\n========================================\n`);
+    console.log(`[ResumeFlow OTP] Generated code for ${email}: ${otp}`);
 
     // Dispatch email if SMTP configured
     if (process.env.SMTP_USER && process.env.SMTP_PASS) {

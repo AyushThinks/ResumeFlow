@@ -9,4 +9,4 @@ router.put("/:id", auth, applicationController.update);
 router.patch("/:id", auth, applicationController.update);
 router.delete("/:id", auth, applicationController.remove);
 
-module.exports = router; 
+module.exports = router;

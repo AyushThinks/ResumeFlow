@@ -49,8 +49,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     'Sidebar Gold',
     'Sidebar Teal',
     'Sidebar Blue',
-    'Simple',
-    'test'
+    'Simple'
   ];
 
   readonly documentTypes = [

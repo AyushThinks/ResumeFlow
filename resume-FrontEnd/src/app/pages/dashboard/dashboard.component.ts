@@ -37,13 +37,10 @@ export class DashboardComponent implements OnInit {
       const userData = JSON.parse(user);
       this.userName = userData.name;
     }
+
     // Get documents
     this.dashboardService.getDocuments().subscribe({
-
       next: (response) => {
-
-        console.log('Documents response:', response);
-
         this.documentCount = response.documents.length;
 
         // Latest 4 documents
@@ -54,83 +51,47 @@ export class DashboardComponent implements OnInit {
           )
           .slice(0, 4);
 
-
         // Get versions for each document
         this.versionCount = 0;
-
         response.documents.forEach((document: any) => {
-
           this.dashboardService.getVersions(document.id).subscribe({
-
             next: (versionResponse) => {
-
-              console.log(
-                'Versions response:',
-                document.id,
-                versionResponse
-              );
-
               this.versionCount += versionResponse.versions.length;
             },
-
             error: (error) => {
-              console.error(
-                'Failed to load versions:',
-                error
-              );
+              console.error('Failed to load versions:', error);
             }
-
           });
-
         });
-
       },
-
       error: (error) => {
-        console.error(
-          'Failed to load documents:',
-          error
-        );
+        console.error('Failed to load documents:', error);
       }
-
     });
 
     // Get applications
     this.dashboardService.getApplications().subscribe({
-
       next: (response) => {
-
-        console.log(
-          'Applications response:',
-          response
-        );
-
         const applications = response.applications;
-
         this.applicationCount = applications.length;
 
         this.savedCount = applications.filter(
           (application: any) => application.status === 'saved'
         ).length;
-
         this.appliedCount = applications.filter(
           (application: any) => application.status === 'applied'
         ).length;
-
         this.interviewCount = applications.filter(
           (application: any) => application.status === 'interview'
         ).length;
-
         this.offerCount = applications.filter(
           (application: any) => application.status === 'offer'
         ).length;
-
         this.rejectedCount = applications.filter(
           (application: any) => application.status === 'rejected'
         ).length;
 
         const total = applications.length;
-
         if (total > 0) {
           this.savedPercentage = (this.savedCount / total) * 100;
           this.appliedPercentage = (this.appliedCount / total) * 100;
@@ -139,16 +100,10 @@ export class DashboardComponent implements OnInit {
           this.rejectedPercentage = (this.rejectedCount / total) * 100;
         }
       },
-
       error: (error) => {
-        console.error(
-          'Failed to load applications:',
-          error
-        );
+        console.error('Failed to load applications:', error);
       }
-
     });
-
 
     // Get exports (backend + local user-scoped merged)
     this.dashboardService.getExports().subscribe({
@@ -168,7 +123,6 @@ export class DashboardComponent implements OnInit {
         this.exportCount = localExports.length;
       }
     });
-
   }
 
   private getLocalExports(): any[] {
