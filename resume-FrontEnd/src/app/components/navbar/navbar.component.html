@@ -1,6 +1,6 @@
 <header class="navbar">
   <nav class="nav container" aria-label="Primary navigation">
-    <a routerLink="/" class="logo" aria-label="ResumeFlow home">
+    <a routerLink="/" class="logo" aria-label="ResumeFlow home" (click)="closeMobileMenu()">
       <strong>RF</strong>
       <span>ResumeFlow</span>
     </a>
@@ -34,27 +34,91 @@
     </section>
   </nav>
 
-  <!-- Mobile Drawer -->
+  <!-- Mobile Drawer Backdrop -->
   <div
     class="mobile-drawer-backdrop"
     *ngIf="isMobileMenuOpen"
     (click)="closeMobileMenu()">
   </div>
 
+  <!-- Full-Height Mobile Drawer -->
   <div class="mobile-drawer" [class.open]="isMobileMenuOpen" *ngIf="isMobileMenuOpen">
-    <ul class="mobile-nav-links">
-      <li><a href="#features" (click)="closeMobileMenu()">Architecture</a></li>
-      <li><a href="#how-it-works" (click)="closeMobileMenu()">Sync Engine</a></li>
-      <li><a href="#templates" (click)="closeMobileMenu()">Canvas Styles</a></li>
-      <li><a href="#faq" (click)="closeMobileMenu()">Intelligence</a></li>
-    </ul>
+    <div class="mobile-drawer-inner">
+      <div class="mobile-drawer-top">
+        <div class="mobile-telemetry">
+          <span class="pulse-dot"></span>
+          <span class="telemetry-text">SMART CAREER INFRASTRUCTURE</span>
+        </div>
 
-    <div class="mobile-drawer-actions">
-      <a routerLink="/login" (click)="closeMobileMenu()" class="mobile-login-btn">Log in</a>
-      <a routerLink="/signup" (click)="closeMobileMenu()" class="btn btn-primary mobile-cta-btn">
-        <span>Start writing</span>
-        <mat-icon class="btn-arrow">arrow_forward</mat-icon>
-      </a>
+        <ul class="mobile-nav-links">
+          <li>
+            <a href="#features" (click)="closeMobileMenu()">
+              <span class="link-icon-wrap">
+                <mat-icon>layers</mat-icon>
+              </span>
+              <div class="link-text">
+                <span class="link-title">Architecture</span>
+                <span class="link-sub">System structure & core features</span>
+              </div>
+              <mat-icon class="link-chevron">chevron_right</mat-icon>
+            </a>
+          </li>
+          <li>
+            <a href="#how-it-works" (click)="closeMobileMenu()">
+              <span class="link-icon-wrap">
+                <mat-icon>sync_alt</mat-icon>
+              </span>
+              <div class="link-text">
+                <span class="link-title">Sync Engine</span>
+                <span class="link-sub">Real-time sync & fast ATS export</span>
+              </div>
+              <mat-icon class="link-chevron">chevron_right</mat-icon>
+            </a>
+          </li>
+          <li>
+            <a href="#templates" (click)="closeMobileMenu()">
+              <span class="link-icon-wrap">
+                <mat-icon>palette</mat-icon>
+              </span>
+              <div class="link-text">
+                <span class="link-title">Canvas Styles</span>
+                <span class="link-sub">Curated modern resume templates</span>
+              </div>
+              <mat-icon class="link-chevron">chevron_right</mat-icon>
+            </a>
+          </li>
+          <li>
+            <a href="#faq" (click)="closeMobileMenu()">
+              <span class="link-icon-wrap">
+                <mat-icon>psychology</mat-icon>
+              </span>
+              <div class="link-text">
+                <span class="link-title">Intelligence</span>
+                <span class="link-sub">AI assistance & common FAQs</span>
+              </div>
+              <mat-icon class="link-chevron">chevron_right</mat-icon>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="mobile-drawer-bottom">
+        <div class="mobile-trust-badge">
+          <mat-icon>verified</mat-icon>
+          <span>ATS Pass Guaranteed • 0.02s Real-Time Sync</span>
+        </div>
+
+        <div class="mobile-drawer-actions">
+          <a routerLink="/login" (click)="closeMobileMenu()" class="mobile-login-btn">
+            <mat-icon>login</mat-icon>
+            <span>Log in</span>
+          </a>
+          <a routerLink="/signup" (click)="closeMobileMenu()" class="btn btn-primary mobile-cta-btn">
+            <span>Start writing free</span>
+            <mat-icon class="btn-arrow">arrow_forward</mat-icon>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </header>

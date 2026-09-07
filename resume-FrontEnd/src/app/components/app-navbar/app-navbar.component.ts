@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 interface User {
@@ -12,7 +12,7 @@ interface User {
   templateUrl: './app-navbar.component.html',
   styleUrls: ['./app-navbar.component.scss']
 })
-export class AppNavbarComponent implements OnInit {
+export class AppNavbarComponent implements OnInit, OnDestroy {
 
   isMenuOpen = false;
   isMobileNavOpen = false;
@@ -25,15 +25,29 @@ export class AppNavbarComponent implements OnInit {
     this.loadUser();
   }
 
+  ngOnDestroy(): void {
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = '';
+    }
+  }
+
   toggleMobileNav(): void {
     this.isMobileNavOpen = !this.isMobileNavOpen;
     if (this.isMobileNavOpen) {
       this.isMenuOpen = false;
     }
+    this.syncBodyScroll();
   }
 
   closeMobileNav(): void {
     this.isMobileNavOpen = false;
+    this.syncBodyScroll();
+  }
+
+  private syncBodyScroll(): void {
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = this.isMobileNavOpen ? 'hidden' : '';
+    }
   }
 
   loadUser(): void {

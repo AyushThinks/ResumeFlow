@@ -567,8 +567,25 @@
     }
   }
 
-  .app-mobile-drawer.open {
-    display: flex;
+  .app-mobile-drawer {
+    display: none;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(100dvh - 64px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px 20px max(24px, env(safe-area-inset-bottom));
+    background: #ffffff;
+    z-index: 999;
+
+    &.open {
+      display: flex;
+    }
   }
 }
 
