@@ -165,7 +165,7 @@
   </div>
 
   <!-- Mobile Drawer Menu -->
-  <div class="app-mobile-drawer" [class.open]="isMobileNavOpen">
+  <div class="app-mobile-drawer" [class.open]="isMobileNavOpen" *ngIf="isMobileNavOpen">
     <nav class="mobile-drawer-links">
       <a
         routerLink="/dashboard"

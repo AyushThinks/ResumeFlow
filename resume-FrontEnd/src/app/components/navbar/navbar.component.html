@@ -41,7 +41,7 @@
     (click)="closeMobileMenu()">
   </div>
 
-  <div class="mobile-drawer" [class.open]="isMobileMenuOpen">
+  <div class="mobile-drawer" [class.open]="isMobileMenuOpen" *ngIf="isMobileMenuOpen">
     <ul class="mobile-nav-links">
       <li><a href="#features" (click)="closeMobileMenu()">Architecture</a></li>
       <li><a href="#how-it-works" (click)="closeMobileMenu()">Sync Engine</a></li>

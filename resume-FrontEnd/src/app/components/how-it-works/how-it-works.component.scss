@@ -241,11 +241,66 @@
 
 @media (max-width: 640px) {
   .process {
-    padding-block: 64px;
+    padding-block: 56px;
   }
 
   .steps li {
     grid-template-columns: 42px 1fr;
     padding: 20px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .steps li {
+    grid-template-columns: 36px 1fr;
+    gap: 12px;
+    padding: 16px 14px;
+
+    b {
+      width: 36px;
+      height: 36px;
+      font-size: 0.85rem;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+    }
+  }
+
+  .sync-card {
+    padding: 20px 16px;
+
+    header strong {
+      font-size: 1rem;
+    }
+  }
+
+  .sync-nodes li:not(.connector-line) {
+    padding: 10px 12px;
+    gap: 10px;
+
+    .node-icon {
+      width: 30px;
+      height: 30px;
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    .node-text strong {
+      font-size: 0.8rem;
+    }
+
+    .node-latency {
+      font-size: 0.6rem;
+      padding: 2px 5px;
+    }
+  }
+
+  .sync-nodes .connector-line {
+    margin-left: 28px;
   }
 }

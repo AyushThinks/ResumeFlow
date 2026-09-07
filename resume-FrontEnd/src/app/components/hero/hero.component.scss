@@ -1,8 +1,8 @@
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(540px, 1.1fr);
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   align-items: center;
-  gap: clamp(48px, 6vw, 84px);
+  gap: clamp(36px, 5vw, 84px);
   min-height: calc(100vh - 72px);
   padding-block: 72px 96px;
 }
@@ -159,15 +159,24 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
+    min-width: 0;
+    overflow: hidden;
     color: #475569;
     font-family: var(--font-mono);
     font-size: 0.72rem;
     font-weight: 600;
 
+    strong {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     .doc-icon {
       font-size: 15px;
       width: 15px;
       height: 15px;
+      flex-shrink: 0;
       color: var(--accent-primary);
     }
   }
@@ -502,22 +511,10 @@
   }
 }
 
-@media (max-width: 640px) {
-  .hero {
-    padding-block: 48px 64px;
-  }
-
-  .hero-actions {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .text-link {
-    justify-content: center;
-  }
-
+@media (max-width: 860px) {
   .builder-preview {
     grid-template-columns: 1fr;
+    min-height: auto;
   }
 
   .editor-panel {
@@ -525,7 +522,75 @@
   }
 
   .resume-paper {
-    min-height: 400px;
-    margin: 14px;
+    margin: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding-block: 40px 56px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.1rem, 7vw, 3rem);
+    margin: 14px 0 18px;
+  }
+
+  .hero-subtext {
+    margin-bottom: 24px;
+    font-size: 0.98rem;
+  }
+
+  .hero-actions {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .text-link {
+    justify-content: center;
+  }
+
+  .resume-paper {
+    min-height: auto;
+    margin: 12px;
+    padding: 22px 18px;
+
+    .ats-badge {
+      position: static;
+      margin-bottom: 12px;
+      display: inline-flex;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .stage-toolbar {
+    grid-template-columns: 50px 1fr auto;
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .stage-status {
+    grid-template-columns: 20px 1fr auto;
+    padding: 10px 12px;
+    gap: 8px;
+
+    .status-copy strong {
+      font-size: 0.68rem;
+    }
+
+    .status-copy span {
+      display: none;
+    }
+  }
+
+  .hero-notes {
+    gap: 8px 12px;
+    margin-top: 24px;
+
+    li {
+      font-size: 0.76rem;
+    }
   }
 }
